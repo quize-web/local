@@ -1,0 +1,73 @@
+version: "3.8"
+services:
+
+  # PHP
+  php74:
+    container_name: php74
+    # restart: always
+    build: ./php/74
+    volumes:
+      - ./php/74/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+      - ../../projects:/data/www
+      # - ./app.socket:/app.socket
+    ports:
+     - "9000:9000"
+    networks: 
+        backend:
+            aliases: 
+                - php74_net
+
+  # APACHE
+  apache:
+    container_name: apache
+    build: ./apache
+    # restart: always
+    depends_on:
+      - php74
+    volumes:
+      - ./apache/configs/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./apache/configs/httpd-examples.conf:/usr/local/apache2/conf/extra/httpd-examples.conf
+      - ./apache/configs/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+      - ./apache/logs:/usr/local/apache2/logs
+      - ../../projects:/data/www
+      # - ./app.socket:/app.socket
+    ports:
+     - "8080:8080"
+    networks: 
+        backend:
+            aliases: 
+                - apache_net
+
+  # NGINX
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    # restart: always
+    depends_on:
+      - php74
+      - apache
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/logs:/etc/nginx/logs
+      - ../../projects:/data/www
+    ports:
+     - "80:80"
+    networks: 
+        backend:
+            aliases: 
+                - nginx_net
+
+  # REDIS
+  redis:
+    container_name: redis
+    build: ./redis
+    # restart: always
+    ports:
+     - "6379:6379"
+    networks: 
+        backend:
+            aliases: 
+                - redis_net
+
+networks: 
+  backend:
