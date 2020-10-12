@@ -29,7 +29,10 @@ server {
 
     # все остальные запросы отдаем в прокси (apache/php-fpm)
     location / {
+        # добавление слеша в конец URI
+        # rewrite ^([^.]*[^/])$ $1/ permanent;
         index /index.php;
+        try_files $uri $uri/ /index.php;
     }
     location ~ \.php$ {
         try_files $uri @php;
@@ -42,7 +45,7 @@ server {
 
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local$fastcgi_script_name;
-        fastcgi_pass php74:9000;
+        fastcgi_pass php__74:9000;
     }
 
     # aliases
@@ -60,7 +63,7 @@ server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local/index.php;
         fastcgi_param SCRIPT_NAME /index.php;
-        fastcgi_pass php74:9000;
+        fastcgi_pass php__74:9000;
     }
 }
 

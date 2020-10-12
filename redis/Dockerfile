@@ -1,1 +1,1 @@
-FROM redis:latest
+FROM redis:6.0.8
