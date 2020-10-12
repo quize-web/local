@@ -31,6 +31,7 @@ server {
     location / {
         # добавление слеша в конец URI
         # rewrite ^([^.]*[^/])$ $1/ permanent;
+
         index /index.php;
         try_files $uri $uri/ /index.php;
     }
