@@ -74,6 +74,9 @@ server {
     server_name example-apache.local;
     root /data/www/example-apache.local;
 
+    access_log /etc/nginx/logs/example-apache.local.access.log;
+    error_log /etc/nginx/logs/example-apache.local.error.log notice;
+
     # всю статику, которая реально существует,
     # отдаем пользователю напрямую без прокси
     location ~ \.(jpe?g|png|svg|ico)$ {
