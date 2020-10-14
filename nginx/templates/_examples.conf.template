@@ -7,10 +7,20 @@ server {
     access_log /etc/nginx/logs/example-nginx.local.access.log;
     error_log /etc/nginx/logs/example-nginx.local.error.log notice;
 
+    # запрещаем работать со скрытыми файлами и папками
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+    location ~* .*/\..* {
+        return 403;
+    }
+
     # редирект ресурсов на production-хост
-    # location ~* ^\/uploads {
-    #     try_files $uri @missing;
-    # }
+    #location ~* ^\/uploads {
+    #    try_files $uri @missing;
+    #}
 
     # всю статику, которая реально существует,
     # отдаем пользователю напрямую без прокси
@@ -30,7 +40,8 @@ server {
     # все остальные запросы отдаем в прокси (apache/php-fpm)
     location / {
         # добавление слеша в конец URI
-        # rewrite ^([^.]*[^/])$ $1/ permanent;
+        # (для файлов с расширениями не отрабатывает)
+        #rewrite ^([^.]*[^/])$ $1/ permanent;
 
         index /index.php;
         try_files $uri $uri/ /index.php?$args;

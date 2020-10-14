@@ -1,5 +1,6 @@
 FROM php:7.4-fpm
 
+# скачка / установка пакетов
 RUN apt-get update && apt-get install -y \
     	libpng-dev \
 		libzip-dev \
@@ -9,13 +10,13 @@ RUN apt-get update && apt-get install -y \
   	&& docker-php-ext-install zip \
     && docker-php-ext-install gd
 
-# установка composer
+# скачка и установка composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# установка node.js и npm
+# скачка и установка node.js и npm
 RUN curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh && bash nodesource_setup.sh && apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages install nodejs
 
-# установка и включение Imagick (скачивание выше)
+# установка и включение Imagick (скачка выше)
 RUN printf "\n" | pecl install imagick
 RUN docker-php-ext-enable imagick
 
