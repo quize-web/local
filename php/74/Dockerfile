@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     	libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo pdo_mysql \
   	&& docker-php-ext-install zip \
-    && docker-php-ext-install gd
+    && docker-php-ext-install gd \
     && docker-php-ext-install soap
 
 # скачка и установка composer
