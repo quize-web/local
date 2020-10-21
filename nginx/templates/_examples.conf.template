@@ -49,6 +49,7 @@ server {
     location ~ \.php$ {
         try_files $uri @php;
 
+        fastcgi_read_timeout 600;
         fastcgi_buffer_size 32k;
         fastcgi_buffers 4 32k;
         proxy_buffer_size 64k;
@@ -60,12 +61,18 @@ server {
         fastcgi_pass php__74:9000;
     }
 
+    # TODO: reactorcms (взять из конфигурации для rolf.local)
+    # включать, если нужен
+    #location ~ ^\/reactorcms {
+    #    # добавление слеша в конец URI
+    #    #rewrite ^([^.]*[^/])$ $1/ permanent;
+    #
+    #    try_files $uri @reactor_php;
+    #}
+
     # aliases
-    location @missing {
-        rewrite ^/(.*) https://www.example.com/$1 permanent;
-        break;
-    }
     location @php {
+        fastcgi_read_timeout 600;
         fastcgi_buffer_size 32k;
         fastcgi_buffers 4 32k;
         proxy_buffer_size 64k;
@@ -76,6 +83,24 @@ server {
         fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local/index.php;
         fastcgi_param SCRIPT_NAME /index.php;
         fastcgi_pass php__74:9000;
+    }
+    # TODO: придумать, как можно сократить
+    location @reactor_php {
+        fastcgi_read_timeout 600;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 4 32k;
+        proxy_buffer_size 64k;
+        proxy_buffers 4 64k;
+        proxy_busy_buffers_size 64k;
+
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local/reactorcms/index.php;
+        fastcgi_param SCRIPT_NAME /reactorcms/index.php;
+        fastcgi_pass php__74:9000;
+    }
+    location @missing {
+        rewrite ^/(.*) https://www.example.com/$1 permanent;
+        break;
     }
 }
 
@@ -114,6 +139,10 @@ server {
     location ~ \.php$ {
         try_files $uri @apache;
         # TODO: to file!
+        proxy_connect_timeout 600;
+        proxy_send_timeout 600;
+        proxy_read_timeout 600;
+        send_timeout 600;
         proxy_set_header Host $host;
         proxy_set_header Referer $http_referer;
         proxy_set_header X-Forwarded-Port $server_port;
@@ -128,6 +157,10 @@ server {
     location @apache {
         proxy_set_header Host $host;
         # TODO: to file!
+        proxy_connect_timeout 600;
+        proxy_send_timeout 600;
+        proxy_read_timeout 600;
+        send_timeout 600;
         proxy_set_header Referer $http_referer;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
