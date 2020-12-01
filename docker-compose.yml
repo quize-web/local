@@ -8,7 +8,7 @@ services:
     build: ./php/74
     volumes:
       - ./php/74/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
-      - ../../projects:/data/www
+      - ${PROJECTS_FOLDER}:/data/www
       # - ./app.socket:/app.socket
     ports:
      - "9000:9000"
@@ -24,7 +24,7 @@ services:
     build: ./php/71
     volumes:
       - ./php/71/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
-      - ../../projects:/data/www
+      - ${PROJECTS_FOLDER}:/data/www
       # - ./app.socket:/app.socket
     ports:
      - "9001:9000"
@@ -40,7 +40,7 @@ services:
     build: ./php/54
     volumes:
       - ./php/54/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
-      - ../../projects:/data/www
+      - ${PROJECTS_FOLDER}:/data/www
       # - ./app.socket:/app.socket
     ports:
      - "9002:9000"
@@ -63,7 +63,7 @@ services:
       - ./apache/configs/httpd-examples.conf:/usr/local/apache2/conf/extra/httpd-examples.conf
       - ./apache/configs/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
       - ./apache/logs:/usr/local/apache2/logs
-      - ../../projects:/data/www
+      - ${PROJECTS_FOLDER}:/data/www
       # - ./app.socket:/app.socket
     ports:
      - "8080:8080"
@@ -85,7 +85,7 @@ services:
     volumes:
       - ./nginx/templates:/etc/nginx/templates
       - ./nginx/logs:/etc/nginx/logs
-      - ../../projects:/data/www
+      - ${PROJECTS_FOLDER}:/data/www
     ports:
      - "80:80"
     networks: 
