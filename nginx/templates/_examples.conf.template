@@ -3,6 +3,8 @@ server {
     listen 80;
     server_name example-nginx.local;
     root /data/www/example-nginx.local;
+    # пример использования вложенной директории как корня
+    #root /data/www/example-nginx.local/htdocs;
 
     access_log /etc/nginx/logs/example-nginx.local.access.log;
     error_log /etc/nginx/logs/example-nginx.local.error.log notice;
@@ -30,6 +32,7 @@ server {
     }
     location ~ \.(js|css)$ {
         try_files $uri @php;
+        #try_files $uri @ver;
         expires 1d;
     }
     location ~ \.(txt)$ {
@@ -45,6 +48,9 @@ server {
 
         index /index.php;
         try_files $uri $uri/ /index.php?$args;
+        # пример использования кастомного файла как корня
+        #index /main.php;
+        #try_files $uri $uri/ /main.php?$args;
     }
     location ~ \.php$ {
         try_files $uri @php;
@@ -58,6 +64,8 @@ server {
 
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local$fastcgi_script_name;
+        # пример использования вложенной директории как корня
+        #fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local/htdocs$fastcgi_script_name;
         fastcgi_pass php__74:9000;
     }
 
@@ -82,6 +90,9 @@ server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local/index.php;
         fastcgi_param SCRIPT_NAME /index.php;
+        # пример использования вложенной директории с кастомным файлом как корня
+        #fastcgi_param SCRIPT_FILENAME /data/www/example-nginx.local/htdocs/main.php;
+        #fastcgi_param SCRIPT_NAME /main.php;
         fastcgi_pass php__74:9000;
     }
     # TODO: придумать, как можно сократить
@@ -102,6 +113,9 @@ server {
         rewrite ^/(.*) https://www.example.com/$1 permanent;
         break;
     }
+    location @ver {
+        rewrite ^(/[^.]*?)\..*?(\.(js|css))$ /$1$2;
+    }
 }
 
 # APACHE PROXY EXAMPLE
@@ -109,6 +123,8 @@ server {
     listen 80;
     server_name example-apache.local;
     root /data/www/example-apache.local;
+    # пример использования вложенной директории
+    #root /data/www/optparts.local/htdocs;
 
     access_log /etc/nginx/logs/example-apache.local.access.log;
     error_log /etc/nginx/logs/example-apache.local.error.log notice;
