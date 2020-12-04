@@ -9,6 +9,8 @@ server {
     access_log /etc/nginx/logs/example-nginx.local.access.log;
     error_log /etc/nginx/logs/example-nginx.local.error.log notice;
 
+    client_max_body_size 20M;
+
     # запрещаем работать со скрытыми файлами и папками
     location ~ /\. {
         deny all;
