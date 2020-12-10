@@ -2,6 +2,7 @@ FROM php:7.0-fpm
 
 # скачка / установка пакетов
 RUN apt-get update && apt-get install -y \
+    	libicu-dev \
     	libpng-dev \
 		libzip-dev \
 		libxml2-dev \
@@ -11,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install mysqli \
   	&& docker-php-ext-install zip \
     && docker-php-ext-install gd \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
     && docker-php-ext-install soap
 
 #RUN docker-php-ext-enable mysqli
