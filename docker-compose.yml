@@ -1,10 +1,12 @@
-version: "3.8"
+#version: "3.8"
+version: "3.5"
+
 services:
 
   # PHP 7.4
   php__74:
     container_name: php__74
-    # restart: always
+    restart: always
     build: ./php/74
     volumes:
       - ./php/74/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
@@ -20,7 +22,7 @@ services:
   # PHP 7.1
   php__71:
     container_name: php__71
-    # restart: always
+    restart: always
     build: ./php/71
     volumes:
       - ./php/71/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
@@ -36,7 +38,7 @@ services:
   # PHP 7.0
   php__70:
     container_name: php__70
-    # restart: always
+    restart: always
     build: ./php/70
     volumes:
       - ./php/70/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
@@ -52,7 +54,7 @@ services:
   # PHP 5.4
   php__54:
     container_name: php__54
-    # restart: always
+    restart: always
     build: ./php/54
     volumes:
       - ./php/54/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
@@ -69,7 +71,7 @@ services:
   apache:
     container_name: apache
     build: ./apache
-    # restart: always
+    restart: always
     depends_on:
       - php__74
       - php__71
@@ -93,7 +95,7 @@ services:
   nginx:
     container_name: nginx
     build: ./nginx
-    # restart: always
+    restart: always
     depends_on:
       - php__74
       - php__71
@@ -115,7 +117,7 @@ services:
   redis:
     container_name: redis
     build: ./redis
-    # restart: always
+    restart: always
     ports:
      - "6379:6379"
     networks: 
