@@ -1,4 +1,5 @@
 #version: "3.8"
+#version: "3.7"
 version: "3.5"
 
 services:
@@ -6,27 +7,31 @@ services:
   # PHP 7.4
   php__74:
     container_name: php__74
-    restart: always
+#    restart: always
     build: ./php/74
     volumes:
-      - ./php/74/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       - ${PROJECTS_FOLDER}:/data/www
-      # - ./app.socket:/app.socket
+#      - ./php/74/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+#       - ./app.socket:/app.socket
     ports:
      - "9000:9000"
+    expose:
+      - "9000"
+#    extra_hosts:
+#      - "rolf-probeg.local:172.18.0.8"
     networks:
         backend:
-            aliases: 
+            aliases:
                 - php__74_net
 
   # PHP 7.1
   php__71:
     container_name: php__71
-    restart: always
+#    restart: always
     build: ./php/71
     volumes:
-      - ./php/71/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       - ${PROJECTS_FOLDER}:/data/www
+      - ./php/71/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       # - ./app.socket:/app.socket
     ports:
      - "9001:9000"
@@ -38,11 +43,11 @@ services:
   # PHP 7.0
   php__70:
     container_name: php__70
-    restart: always
+#    restart: always
     build: ./php/70
     volumes:
-      - ./php/70/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       - ${PROJECTS_FOLDER}:/data/www
+      - ./php/70/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       # - ./app.socket:/app.socket
     ports:
      - "9002:9000"
@@ -54,11 +59,11 @@ services:
   # PHP 5.4
   php__54:
     container_name: php__54
-    restart: always
+#    restart: always
     build: ./php/54
     volumes:
-      - ./php/54/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       - ${PROJECTS_FOLDER}:/data/www
+      - ./php/54/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
       # - ./app.socket:/app.socket
     ports:
      - "9003:9000"
@@ -71,31 +76,31 @@ services:
   apache:
     container_name: apache
     build: ./apache
-    restart: always
+#    restart: always
     depends_on:
       - php__74
       - php__71
       - php__70
       - php__54
     volumes:
+      - ${PROJECTS_FOLDER}:/data/www
       - ./apache/configs/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./apache/configs/httpd-examples.conf:/usr/local/apache2/conf/extra/httpd-examples.conf
       - ./apache/configs/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
       - ./apache/logs:/usr/local/apache2/logs
-      - ${PROJECTS_FOLDER}:/data/www
       # - ./app.socket:/app.socket
     ports:
      - "8080:8080"
-    networks: 
+    networks:
         backend:
-            aliases: 
+            aliases:
                 - apache_net
 
   # NGINX
   nginx:
     container_name: nginx
     build: ./nginx
-    restart: always
+#    restart: always
     depends_on:
       - php__74
       - php__71
@@ -103,27 +108,40 @@ services:
       - php__54
       - apache
     volumes:
+      - ${PROJECTS_FOLDER}:/data/www
+      - ./nginx/certs:/etc/nginx/certs
       - ./nginx/templates:/etc/nginx/templates
       - ./nginx/logs:/etc/nginx/logs
-      - ${PROJECTS_FOLDER}:/data/www
     ports:
      - "80:80"
-    networks: 
+     - "443:443"
+#    network_mode: "host"
+    expose:
+      - "80"
+      - "443"
+    networks:
         backend:
-            aliases: 
+            aliases:
                 - nginx_net
+                - rolf-probeg.local
 
   # REDIS
   redis:
     container_name: redis
+    command: ["sh", "-c", "exec redis-server --requirepass \"${REDIS_PASS}\""]
+    #command: redis-server --requirepass rAq9eg94HStZa99m
     build: ./redis
-    restart: always
+#    restart: always
+    # порт в приложениях скорее всего все равно нужно будет писать 6379
     ports:
-     - "6379:6379"
-    networks: 
+#     - "6379:6379"
+     - "1337:1337"
+    networks:
         backend:
-            aliases: 
+            aliases:
                 - redis_net
 
-networks: 
+networks:
   backend:
+    driver: bridge
+#    driver: host

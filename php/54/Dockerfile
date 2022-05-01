@@ -20,10 +20,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 #RUN apt-get install -y \ lzip \ xz-lzma
 
+RUN apt-get update && apt-get install -y ca-certificates
+
 # скачка и установка node.js и npm
 RUN curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt-get -y --force-yes install nodejs
+#    && bash nodesource_setup.sh \
+#    && apt-get -y --force-yes install nodejs
+
+#RUN curl -sL https://deb.nodesource.com/setup_12.x | sed 's|https://|http://|' | bash - && apt-get install -y nodejs
+
 # можно попробовать это, но нужно ставить wget и tar
 #RUN \
 #	mkdir -p /usr/local/src && \

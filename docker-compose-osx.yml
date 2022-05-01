@@ -1,0 +1,61 @@
+#version: "3.8"
+version: "3.7"
+#version: "3.5"
+
+services:
+
+  mutagen-global-service:
+    build: ./mutagen
+    init: true
+    container_name: "mutagen-global-service"
+    volumes:
+      - projects-folder:/data
+
+  php__74:
+    volumes:
+      - php-74-ini:/usr/local/etc/php/conf.d/custom-php.ini
+      - projects-folder:/data/www
+
+#  php__71:
+#    volumes:
+#      - php-71-ini:/usr/local/etc/php/conf.d/custom-php.ini
+#      - projects-folder:/data/www
+
+#  php__70:
+#    volumes:
+#      - php-70-ini:/usr/local/etc/php/conf.d/custom-php.ini
+#      - projects-folder:/data/www
+
+#  php__54:
+#    volumes:
+#      - php-54-ini:/usr/local/etc/php/conf.d/custom-php.ini
+#      - projects-folder:/data/www
+
+#  apache:
+#    volumes:
+#      - apache-httpd:/usr/local/apache2/conf/httpd.conf
+#      - apache-httpd-examples:/usr/local/apache2/conf/extra/httpd-examples.conf
+#      - apache-httpd-vhosts:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+#      - apache-logs:/usr/local/apache2/logs
+#      - projects-folder:/data/www
+
+#  nginx:
+#    volumes:
+#      - nginx-certs:/etc/nginx/certs
+#      - nginx-templates:/etc/nginx/templates
+#      - nginx-logs:/etc/nginx/logs
+#      - projects-folder:/data/www
+
+volumes:
+  projects-folder:
+  php-74-ini:
+#  php-71-ini:
+#  php-70-ini:
+#  php-54-ini:
+#  apache-httpd:
+#  apache-httpd-examples:
+#  apache-httpd-vhosts:
+#  apache-logs:
+#  nginx-certs:
+#  nginx-templates:
+#  nginx-logs:

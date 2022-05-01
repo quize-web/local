@@ -1,0 +1,22 @@
+version: "2"
+syncs:
+  projects-folder:
+    notify_terminal: true
+    src: '../../projects'
+    sync_excludes: ['.git', '.idea', 'node_modules']
+  apache-logs:
+    notify_terminal: true
+    src: './apache/logs'
+  nginx-certs:
+    notify_terminal: true
+    src: './nginx/certs'
+  nginx-templates:
+    notify_terminal: true
+    src: './nginx/templates'
+  nginx-logs:
+    notify_terminal: true
+    src: './nginx/logs'
+
+#  php-74-ini:
+#    notify_terminal: true
+#    src: './php/74/php.ini'

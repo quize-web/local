@@ -1,7 +1,18 @@
 # PHP-FPM PROXY EXAMPLE
+#server {
+#    listen 80;
+#    server_name autopodpiska.ru;
+#    return 301 https://autopodpiska.ru$request_uri;
+#}
 server {
     listen 80;
+    #listen 443 ssl;
+
     server_name example-nginx.local;
+
+    #ssl_certificate         /etc/nginx/certs/autopodpiska.ru.crt;
+    #ssl_certificate_key     /etc/nginx/certs/autopodpiska.ru.key;
+
     root /data/www/example-nginx.local;
     # пример использования вложенной директории как корня
     #root /data/www/example-nginx.local/htdocs;
@@ -10,6 +21,24 @@ server {
     error_log /etc/nginx/logs/example-nginx.local.error.log notice;
 
     client_max_body_size 64M;
+
+    # сжатие
+    gzip on;
+    gzip_disable "msie6";
+
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_buffers 16 8k;
+    gzip_http_version 1.1;
+    gzip_min_length 256;
+    gzip_types application/atom+xml font/eot font/otf font/ttf application/xhtml+xml application/rdf+xml application/rss+xml application/ld+json application/manifest+json application/geo+json text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript application/vnd.ms-fontobject application/x-font-ttf font/opentype image/svg+xml image/x-icon;
+    # сжатие [конец]
+
+    # редирект с множественных слешей
+    #if ($request_uri ~* "\/\/") {
+    #  rewrite ^/(.*) $scheme://$host/$1 permanent;
+    #}
 
     # запрещаем работать со скрытыми файлами и папками
     location ~ /\. {
@@ -28,18 +57,21 @@ server {
 
     # всю статику, которая реально существует,
     # отдаем пользователю напрямую без прокси
-    location ~ \.(jpe?g|png|svg|ico)$ {
+    location ~ \.(jpg|jpeg|gif|png|svg|ico|mp3|ogg|mpe?g|avi|zip|gz|bz2?|rar|swf|pdf|otf|woff|woff2|ttf|webp)$ {
         try_files $uri @php;
         expires 28d;
     }
-    location ~ \.(js|css)$ {
+    location ~ \.(js)$ {
         try_files $uri @php;
-        #try_files $uri @ver;
+        expires 7d;
+    }
+    location ~ \.(css)$ {
+        try_files $uri @php;
         expires 1d;
     }
     location ~ \.(txt)$ {
         try_files $uri @php;
-        expires 14d;
+        expires 28d;
     }
 
     # все остальные запросы отдаем в прокси (apache/php-fpm)

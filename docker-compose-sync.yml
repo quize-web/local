@@ -1,0 +1,62 @@
+#version: "3.8"
+version: "3.7"
+#version: "3.5"
+
+services:
+
+  php__74:
+    volumes:
+      - projects-folder:/data/www:nocopy
+      - ./php/74/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+
+  php__71:
+    volumes:
+      - projects-folder:/data/www
+      - ./php/71/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+
+  php__70:
+    volumes:
+      - projects-folder:/data/www
+      - ./php/70/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+
+  php__54:
+    volumes:
+      - projects-folder:/data/www
+      - ./php/54/php.ini:/usr/local/etc/php/conf.d/custom-php.ini
+
+  apache:
+    volumes:
+      - projects-folder:/data/www
+      - apache-logs:/usr/local/apache2/logs
+      - ./apache/configs/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./apache/configs/httpd-examples.conf:/usr/local/apache2/conf/extra/httpd-examples.conf
+      - ./apache/configs/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+
+  nginx:
+    volumes:
+      - projects-folder:/data/www
+      - nginx-templates:/etc/nginx/templates
+      - nginx-certs:/etc/nginx/certs
+      - nginx-logs:/etc/nginx/logs
+
+volumes:
+  projects-folder:
+    external: true
+
+#  php-74-ini:
+#    external: true
+#  php-71-ini:
+#  php-70-ini:
+#  php-54-ini:
+#  apache-httpd:
+#  apache-httpd-examples:
+#  apache-httpd-vhosts:
+
+  apache-logs:
+    external: true
+  nginx-certs:
+    external: true
+  nginx-templates:
+    external: true
+  nginx-logs:
+    external: true

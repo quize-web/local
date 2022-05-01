@@ -1,0 +1,88 @@
+sync:
+  defaults:
+    mode: "two-way-resolved"
+    flushOnCreate: true
+    ignore:
+      vcs: true
+    configurationBeta:
+      permissions:
+        defaultFileMode: 0666
+        defaultDirectoryMode: 0666
+  projects-folder:
+    alpha: "../../projects"
+    beta: "docker://mutagen-global-service/data/www"
+    ignore:
+      paths:
+        - ".idea"
+        - "node_modules"
+  php-74-ini:
+    alpha: "./php/74/php.ini"
+    beta: "docker://php__74/usr/local/etc/php/conf.d/custom-php.ini"
+#  php-71-ini:
+#    alpha: "./php/71/php.ini"
+#    beta: "docker://php__71/usr/local/etc/php/conf.d/custom-php.ini"
+#  php-70-ini:
+#    alpha: "./php/70/php.ini"
+#    beta: "docker://php__70/usr/local/etc/php/conf.d/custom-php.ini"
+#  php-54-ini:
+#    alpha: "./php/54/php.ini"
+#    beta: "docker://php__54/usr/local/etc/php/conf.d/custom-php.ini"
+#  apache-httpd:
+#    alpha: "./apache/configs/httpd.conf"
+#    beta: "docker://apache/usr/local/apache2/conf/httpd.conf"
+#  apache-httpd-examples:
+#    alpha: "./apache/configs/httpd-examples.conf"
+#    beta: "docker://apache/usr/local/apache2/conf/extra/httpd-examples.conf"
+#  apache-httpd-vhosts:
+#    alpha: "./apache/configs/httpd-vhosts.conf"
+#    beta: "docker://apache/usr/local/apache2/conf/extra/httpd-vhosts.conf"
+#  apache-logs:
+#    alpha: "./apache/logs"
+#    beta: "docker://apache/usr/local/apache2/logs"
+#  nginx-certs:
+#    alpha: "./nginx/certs"
+#    beta: "docker://nginx/etc/nginx/certs"
+#  nginx-templates:
+#    alpha: "./nginx/templates"
+#    beta: "docker://nginx/etc/nginx/templates"
+#  nginx-logs:
+#    alpha: "./nginx/logs"
+#    beta: "docker://nginx/etc/nginx/logs"
+
+forward:
+  php-74:
+    source: "tcp:localhost:9000"
+    destination: "docker://mutagen-global-service:tcp:php__74:9000"
+#  php-71:
+#    source: "tcp:localhost:9001"
+#    destination: "docker://mutagen-global-service:tcp:php__71:9001"
+#  php-70:
+#    source: "tcp:localhost:9002"
+#    destination: "docker://mutagen-global-service:tcp:php__70:9002"
+#  php-54:
+#    source: "tcp:localhost:9003"
+#    destination: "docker://mutagen-global-service:tcp:php__54:9003"
+#  apache:
+#    source: "tcp:localhost:8080"
+#    destination: "docker://mutagen-global-service:tcp:apache:8080"
+#  nginx:
+#    source: "tcp:localhost:80"
+#    destination: "docker://mutagen-global-service:tcp:nginx:80"
+
+# Set up the service and any volumes before creating sessions.
+beforeCreate:
+  - docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d
+
+# Set up the main services after creating sessions. At this point, sessions will
+# have been established and code pushed to the shared volume.
+# After this is done, we can start up the deployment scripts.
+afterCreate:
+  - docker-compose -f docker-compose.yml -f docker-compose-osx.yml up -d
+
+# Tear down all services and remove the code volume after terminating sessions.
+afterTerminate:
+  - docker-compose -f docker-compose.yml -f docker-compose-osx.yml stop
+
+# Define common utility commands.
+commands:
+  logs: docker-compose -f docker-compose.yml -f docker-compose-osx.yml logs --follow
